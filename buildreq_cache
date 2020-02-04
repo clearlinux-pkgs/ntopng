@@ -1,0 +1,15 @@
+3.8.1
+asciidoc
+gettext
+glib-dev
+groff
+libcap-dev
+libnl-dev
+libpcap-dev
+libxml2-dev
+lua-dev
+openldap-dev
+pkgconfig(libssl)
+readline-dev
+ruby
+xmlto
