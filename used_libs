@@ -3,6 +3,7 @@ libcap.so.2
 libcrypto.so.1.1
 libcurl.so.4
 libdl.so.2
+libexpat.so.1
 libgcc_s.so.1
 libjson-c.so.4
 libm.so.6
@@ -11,6 +12,7 @@ libmaxminddb.so.0
 libndpi.so.3
 libpcap.so.1
 libpthread.so.0
+librrd.so.8
 libsqlite3.so.0
 libssl.so.1.1
 libstdc++.so.6

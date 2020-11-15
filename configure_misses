@@ -1,19 +1,8 @@
-Configure miss: ebpfflowlib
 Configure miss: ntopng professional edition
+Configure miss: init_snmp in -lsnmp
+Configure miss: init_snmp in -lnetsnmp
+Configure miss: rrd_update_r in -lrrd_th
 Configure miss: nl_handle_alloc in -lnl
 Configure miss: x86_64-generic-linux-gnu-mariadb_config
 Configure miss: main in -lwrap
 Configure miss: rc_read_config in -lradcli
-Configure miss: acos
-Configure miss: whether NLS is requested
-Configure miss: whether to use NLS
-Configure miss: fpclassify
-Configure miss: whether isfinite is broken
-Configure miss: __tm_gmtoff in struct tm
-Configure miss: _NL_TIME_WEEK_1STDAY
-Configure miss: if ctime_r need special care to act posixly correct
-Configure miss: do we need malloc/malloc.h
-Configure miss: glib.h usability
-Configure miss: glib.h presence
-Configure miss: glib.h
-Configure miss: gnroff
