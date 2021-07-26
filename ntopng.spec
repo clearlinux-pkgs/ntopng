@@ -4,7 +4,7 @@
 #
 Name     : ntopng
 Version  : 4.2
-Release  : 2
+Release  : 3
 URL      : https://github.com/ntop/ntopng/archive/4.2/ntopng-4.2.tar.gz
 Source0  : https://github.com/ntop/ntopng/archive/4.2/ntopng-4.2.tar.gz
 Summary  : Network traffic probe that shows the network usage.
@@ -42,6 +42,7 @@ BuildRequires : pkgconfig(sqlite3)
 BuildRequires : readline-dev
 BuildRequires : ruby
 Patch1: 0001-Please-don-t-be-like-this.patch
+Patch2: 0002-Compilation-fixes-nDPI-lib-update.patch
 
 %description
 RRD is the Acronym for Round Robin Database. RRD is a system to store and
@@ -90,21 +91,22 @@ man components for the ntopng package.
 %setup -q -n ntopng-4.2
 cd %{_builddir}/ntopng-4.2
 %patch1 -p1
+%patch2 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1605464760
+export SOURCE_DATE_EPOCH=1627332659
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
-export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=auto "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=auto "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=auto "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=auto "
 %autogen --disable-static
 make
 
@@ -116,7 +118,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make TEST_VERBOSE=1 test
 
 %install
-export SOURCE_DATE_EPOCH=1605464760
+export SOURCE_DATE_EPOCH=1627332659
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/ntopng
 cp %{_builddir}/ntopng-4.2/COPYING %{buildroot}/usr/share/package-licenses/ntopng/8624bcdae55baeef00cd11d5dfcfa60f68710a02

@@ -9,7 +9,7 @@ libjson-c.so.4
 libm.so.6
 libmariadb.so.3
 libmaxminddb.so.0
-libndpi.so.3
+libndpi.so.4
 libpcap.so.1
 libpthread.so.0
 librrd.so.8

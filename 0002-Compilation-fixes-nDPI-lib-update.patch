@@ -1,0 +1,154 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Alfredo Cardigliano <cardigliano@ntop.org>
+Date: Mon, 26 Jul 2021 11:23:59 +0200
+Subject: [PATCH] Compilation fixes (nDPI lib update)
+
+Backport notes: Removed the changes to src/Prefs.cpp, since they do not apply
+                at all for version 4.2.
+
+Upstream-Status: Backport
+Reference: https://github.com/ntop/ntopng/commit/025e96e6cb
+---
+ src/Flow.cpp | 52 ++++++++++++++++++++++++++--------------------------
+ src/Ntop.cpp |  7 +++----
+ 2 files changed, 29 insertions(+), 30 deletions(-)
+
+diff --git a/src/Flow.cpp b/src/Flow.cpp
+index 25f5641..7fb2393 100644
+--- a/src/Flow.cpp
++++ b/src/Flow.cpp
+@@ -323,8 +323,8 @@ Flow::~Flow() {
+   if(cli2srvPktTime) delete cli2srvPktTime;
+   if(srv2cliPktTime) delete srv2cliPktTime;
+ 
+-  if(entropy.c2s) ndpi_free_data_analysis(entropy.c2s);
+-  if(entropy.s2c) ndpi_free_data_analysis(entropy.s2c);
++  if(entropy.c2s) ndpi_free_data_analysis(entropy.c2s, 1);
++  if(entropy.s2c) ndpi_free_data_analysis(entropy.s2c, 1);
+ 
+   if(isHTTP()) {
+     if(protos.http.last_url)    free(protos.http.last_url);
+@@ -486,8 +486,8 @@ void Flow::processDetectedProtocol() {
+       if(cli_host) {
+ 	cli_host->incContactedService((char*)ndpiFlow->host_server_name);
+ 
+-	if(ndpiFlow->protos.http.detected_os[0] != '\0')
+-	  cli_host->inlineSetOSDetail((char*)ndpiFlow->protos.http.detected_os);
++	if(ndpiFlow->http.detected_os[0] != '\0')
++	  cli_host->inlineSetOSDetail((char*)ndpiFlow->http.detected_os);
+ 
+ 	if(cli_host->isLocalHost())
+ 	  cli_host->incrVisitedWebSite(host_server_name);
+@@ -531,43 +531,43 @@ void Flow::processExtraDissectedInformation() {
+       break;
+ 
+     case NDPI_PROTOCOL_TLS:
+-      protos.tls.tls_version = ndpiFlow->protos.stun_ssl.ssl.ssl_version;
++      protos.tls.tls_version = ndpiFlow->protos.tls_quic_stun.tls_quic.ssl_version;
+ 
+-      protos.tls.notBefore = ndpiFlow->protos.stun_ssl.ssl.notBefore,
+-	protos.tls.notAfter = ndpiFlow->protos.stun_ssl.ssl.notAfter;
++      protos.tls.notBefore = ndpiFlow->protos.tls_quic_stun.tls_quic.notBefore,
++	protos.tls.notAfter = ndpiFlow->protos.tls_quic_stun.tls_quic.notAfter;
+ 
+       if((protos.tls.client_requested_server_name == NULL)
+-	 && (ndpiFlow->protos.stun_ssl.ssl.client_requested_server_name[0] != '\0')) {
+-	protos.tls.client_requested_server_name = strdup(ndpiFlow->protos.stun_ssl.ssl.client_requested_server_name);
++	 && (ndpiFlow->protos.tls_quic_stun.tls_quic.client_requested_server_name[0] != '\0')) {
++	protos.tls.client_requested_server_name = strdup(ndpiFlow->protos.tls_quic_stun.tls_quic.client_requested_server_name);
+       }
+ 
+       if((protos.tls.server_names == NULL)
+-	 && (ndpiFlow->protos.stun_ssl.ssl.server_names != NULL))
+-	protos.tls.server_names = strdup(ndpiFlow->protos.stun_ssl.ssl.server_names);
++	 && (ndpiFlow->protos.tls_quic_stun.tls_quic.server_names != NULL))
++	protos.tls.server_names = strdup(ndpiFlow->protos.tls_quic_stun.tls_quic.server_names);
+ 
+       if((protos.tls.client_alpn == NULL)
+-	 && (ndpiFlow->protos.stun_ssl.ssl.alpn != NULL))
+-	protos.tls.client_alpn = strdup(ndpiFlow->protos.stun_ssl.ssl.alpn);
++	 && (ndpiFlow->protos.tls_quic_stun.tls_quic.alpn != NULL))
++	protos.tls.client_alpn = strdup(ndpiFlow->protos.tls_quic_stun.tls_quic.alpn);
+ 
+       if((protos.tls.client_tls_supported_versions == NULL)
+-	 && (ndpiFlow->protos.stun_ssl.ssl.tls_supported_versions != NULL))
+-	protos.tls.client_tls_supported_versions = strdup(ndpiFlow->protos.stun_ssl.ssl.tls_supported_versions);
++	 && (ndpiFlow->protos.tls_quic_stun.tls_quic.tls_supported_versions != NULL))
++	protos.tls.client_tls_supported_versions = strdup(ndpiFlow->protos.tls_quic_stun.tls_quic.tls_supported_versions);
+ 
+-      if((protos.tls.issuerDN == NULL) && (ndpiFlow->protos.stun_ssl.ssl.issuerDN != NULL))
+-	protos.tls.issuerDN= strdup(ndpiFlow->protos.stun_ssl.ssl.issuerDN);
++      if((protos.tls.issuerDN == NULL) && (ndpiFlow->protos.tls_quic_stun.tls_quic.issuerDN != NULL))
++	protos.tls.issuerDN= strdup(ndpiFlow->protos.tls_quic_stun.tls_quic.issuerDN);
+ 
+-      if((protos.tls.subjectDN == NULL) && (ndpiFlow->protos.stun_ssl.ssl.subjectDN != NULL))
+-	protos.tls.subjectDN= strdup(ndpiFlow->protos.stun_ssl.ssl.subjectDN);
++      if((protos.tls.subjectDN == NULL) && (ndpiFlow->protos.tls_quic_stun.tls_quic.subjectDN != NULL))
++	protos.tls.subjectDN= strdup(ndpiFlow->protos.tls_quic_stun.tls_quic.subjectDN);
+ 
+-      if((protos.tls.ja3.client_hash == NULL) && (ndpiFlow->protos.stun_ssl.ssl.ja3_client[0] != '\0')) {
+-	protos.tls.ja3.client_hash = strdup(ndpiFlow->protos.stun_ssl.ssl.ja3_client);
++      if((protos.tls.ja3.client_hash == NULL) && (ndpiFlow->protos.tls_quic_stun.tls_quic.ja3_client[0] != '\0')) {
++	protos.tls.ja3.client_hash = strdup(ndpiFlow->protos.tls_quic_stun.tls_quic.ja3_client);
+ 	updateCliJA3();
+       }
+ 
+-      if((protos.tls.ja3.server_hash == NULL) && (ndpiFlow->protos.stun_ssl.ssl.ja3_server[0] != '\0')) {
+-	protos.tls.ja3.server_hash = strdup(ndpiFlow->protos.stun_ssl.ssl.ja3_server);
+-	protos.tls.ja3.server_unsafe_cipher = ndpiFlow->protos.stun_ssl.ssl.server_unsafe_cipher;
+-	protos.tls.ja3.server_cipher = ndpiFlow->protos.stun_ssl.ssl.server_cipher;
++      if((protos.tls.ja3.server_hash == NULL) && (ndpiFlow->protos.tls_quic_stun.tls_quic.ja3_server[0] != '\0')) {
++	protos.tls.ja3.server_hash = strdup(ndpiFlow->protos.tls_quic_stun.tls_quic.ja3_server);
++	protos.tls.ja3.server_unsafe_cipher = ndpiFlow->protos.tls_quic_stun.tls_quic.server_unsafe_cipher;
++	protos.tls.ja3.server_cipher = ndpiFlow->protos.tls_quic_stun.tls_quic.server_cipher;
+ 	updateSrvJA3();
+       }
+       break;
+@@ -4105,7 +4105,7 @@ void Flow::dissectNetBIOS(u_int8_t *payload, u_int16_t payload_len) {
+ 
+   if(((payload[2] & 0x80) /* NetBIOS Response */ || ((payload[2] & 0x78) == 0x28 /* NetBIOS Registration */))
+      && (payload_len >= 12)
+-     && (ndpi_netbios_name_interpret((char*)&payload[12], payload_len - 12, name, sizeof(name)) > 0)
++     && (ndpi_netbios_name_interpret((u_char*)&payload[12], payload_len - 12, (u_char*)name, sizeof(name)) > 0)
+      && (!strstr(name, "__MSBROWSE__"))
+      ) {
+ 
+diff --git a/src/Ntop.cpp b/src/Ntop.cpp
+index 53d4396..c77c1dc 100644
+--- a/src/Ntop.cpp
++++ b/src/Ntop.cpp
+@@ -93,7 +93,7 @@ Ntop::Ntop(char *appName) {
+   last_ndpi_reload = 0;
+   ndpi_struct_shadow = NULL;
+   ndpi_struct = initnDPIStruct();
+-  ndpi_finalize_initalization(ndpi_struct);
++  ndpi_finalize_initialization(ndpi_struct);
+ 
+   internal_alerts_queue = new FifoSerializerQueue(INTERNAL_ALERTS_QUEUE_SIZE);
+ 
+@@ -2845,7 +2845,6 @@ void Ntop::loadProtocolsAssociations(struct ndpi_detection_module_struct *ndpi_s
+ 
+ struct ndpi_detection_module_struct* Ntop::initnDPIStruct() {
+   struct ndpi_detection_module_struct *ndpi_s = ndpi_init_detection_module(ndpi_no_prefs);
+-  u_int16_t no_master[2] = { NDPI_PROTOCOL_NO_MASTER_PROTO, NDPI_PROTOCOL_NO_MASTER_PROTO };
+   ndpi_port_range d_port[MAX_DEFAULT_PORTS];
+   NDPI_PROTOCOL_BITMASK all;
+ 
+@@ -2859,7 +2858,7 @@ struct ndpi_detection_module_struct* Ntop::initnDPIStruct() {
+ 
+   memset(d_port, 0, sizeof(d_port));
+   ndpi_set_proto_defaults(ndpi_s, NDPI_PROTOCOL_UNRATED, NTOPNG_NDPI_OS_PROTO_ID,
+-			  0, no_master, no_master, (char*)"Operating System",
++			  (char*)"Operating System",
+ 			  NDPI_PROTOCOL_CATEGORY_SYSTEM_OS, d_port, d_port);
+ 
+   // enable all protocols
+@@ -2924,7 +2923,7 @@ void Ntop::reloadCustomCategories() {
+     
+     /* The new categories were loaded on the current ndpi_struct_shadow */
+     ndpi_enable_loaded_categories(ndpi_struct_shadow);
+-    ndpi_finalize_initalization(ndpi_struct_shadow);
++    ndpi_finalize_initialization(ndpi_struct_shadow);
+     
+     ntop->getTrace()->traceEvent(TRACE_INFO, "nDPI finalizing reload...");
+     
