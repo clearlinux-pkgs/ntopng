@@ -1,9 +1,18 @@
 Configure miss: g++ option to enable C++11 features
+Configure miss: g++ option to enable C++11 features
+Configure miss: init_snmp in -lnetsnmp
 Configure miss: init_snmp in -lnetsnmp
 Configure miss: init_snmp in -lsnmp
+Configure miss: init_snmp in -lsnmp
+Configure miss: main in -lwrap
 Configure miss: main in -lwrap
 Configure miss: nl_handle_alloc in -lnl
+Configure miss: nl_handle_alloc in -lnl
+Configure miss: ntopng professional edition
 Configure miss: ntopng professional edition
 Configure miss: rc_read_config in -lradcli
+Configure miss: rc_read_config in -lradcli
 Configure miss: rrd_update_r in -lrrd_th
+Configure miss: rrd_update_r in -lrrd_th
+Configure miss: x86_64-generic-linux-gnu-mariadb_config
 Configure miss: x86_64-generic-linux-gnu-mariadb_config
